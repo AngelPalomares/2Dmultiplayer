@@ -6,6 +6,10 @@ using Photon.Pun;
 public class PlayerController : MonoBehaviourPunCallbacks
 {
     public float Speed;
+
+    Vector2 movement;
+
+    public Animator Anim;
     
 
     // Start is called before the first frame update
@@ -19,9 +23,16 @@ public class PlayerController : MonoBehaviourPunCallbacks
     {
         if(photonView.IsMine)
         {
-            Vector2 MoveInput = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
+            movement.x = Input.GetAxisRaw("Horizontal");
+            movement.y = Input.GetAxisRaw("Vertical");
+
+            Vector2 MoveInput = new Vector2(movement.x, movement.y);
             Vector2 MoveAmount = MoveInput.normalized * Speed * Time.deltaTime;
             transform.position += (Vector3)MoveAmount;
+
+            Anim.SetFloat("Horizontal", movement.x);
+            Anim.SetFloat("Vertical", movement.y);
+            Anim.SetFloat("Speed", movement.sqrMagnitude);
         }    
     }
 }
