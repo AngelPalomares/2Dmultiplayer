@@ -6,13 +6,19 @@ using Photon.Pun;
 public class Spawner : MonoBehaviour
 {
     public Transform[] Spawnpoints;
+    public Transform[] HealthSpawnPoints;
+    public GameObject Hearts;
     public GameObject Enemy;
     public float StartTimeBtwSpawns;
     float TimebtwSpawns;
 
+    public float StartHeartTimebtwSpawns;
+    float HeartTimeBtwSpawns;
+
     private void Start()
     {
         TimebtwSpawns = StartTimeBtwSpawns;
+        HeartTimeBtwSpawns = StartHeartTimebtwSpawns;
     }
 
     // Update is called once per frame
@@ -33,6 +39,17 @@ public class Spawner : MonoBehaviour
         {
              TimebtwSpawns -= Time.deltaTime;
         }
+
+        if(HeartTimeBtwSpawns <= 0)
+        {
+            Vector3 SpawnPosition = HealthSpawnPoints[Random.Range(0, HealthSpawnPoints.Length)].position;
+            PhotonNetwork.Instantiate(Hearts.name, SpawnPosition, Quaternion.identity);
+            HeartTimeBtwSpawns = StartHeartTimebtwSpawns;
         }
+        else
+        {
+            HeartTimeBtwSpawns -= Time.deltaTime;
+        }
+     }
     
 }

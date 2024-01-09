@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 
-public class Enemy : MonoBehaviour
+public class Enemy : MonoBehaviourPunCallbacks
 {
     PlayerController[] Players;
     PlayerController nearestPlayer;
     public float Speed;
+    
     // Start is called before the first frame update
     void Start()
     {
@@ -33,5 +34,19 @@ public class Enemy : MonoBehaviour
         {
             transform.position = Vector2.MoveTowards(transform.position, nearestPlayer.transform.position, Speed * Time.deltaTime);
         }
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if(collision.tag == "Bullet")
+        {
+            photonView.RPC("DestroytheenemyRPC", RpcTarget.All);
+        }
+    }
+
+    [PunRPC]
+    void DestroytheenemyRPC()
+    {
+        Destroy(gameObject);
     }
 }

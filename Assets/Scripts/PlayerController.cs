@@ -10,12 +10,17 @@ public class PlayerController : MonoBehaviourPunCallbacks
     Vector2 movement;
 
     public Animator Anim;
+
+    Health healthScript;
+
+    LineRenderer rend;
     
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        healthScript = FindObjectOfType<Health>();
+        rend = FindObjectOfType<LineRenderer>();
     }
 
     // Update is called once per frame
@@ -33,6 +38,28 @@ public class PlayerController : MonoBehaviourPunCallbacks
             Anim.SetFloat("Horizontal", movement.x);
             Anim.SetFloat("Vertical", movement.y);
             Anim.SetFloat("Speed", movement.sqrMagnitude);
+
+            rend.SetPosition(0, transform.position);
+        }
+        else
+        {
+            rend.SetPosition(1, transform.position);
         }    
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (photonView.IsMine)
+        {
+            if (collision.tag == "Enemy")
+            {
+                healthScript.TakeDamage();
+            }
+
+            if(collision.tag == "Health")
+            {
+                healthScript.RecoverHealth();
+            }
+        }
     }
 }
